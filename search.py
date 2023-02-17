@@ -87,16 +87,77 @@ def depthFirstSearch(problem: SearchProblem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
+    #Written by Nikhil
+    #Variable to keep track of nodes.
+    x = util.Stack()
+    #List used for tracking visited nodes
+    visitedNodes = []
+    #Setting initial state to 1 for activation.
+    x.push((problem.getStartState(), [], 1))
+    #Loops is used here to check if the goal has been met.
+    while not x.isEmpty():
+        node = x.pop()
+        state = node[0]
+        operationDone = node[1]
+        if problem.isGoalState(state):
+            return operationDone
+        if state not in visitedNodes:
+            visitedNodes.append(state)
+            successors = problem.getSuccessors(state)
+            for item in successors:
+                childState = item[0]
+                childOperationDone = item[1]
+                if childState not in visitedNodes:
+                    childAction = operationDone + [childOperationDone]
+                    x.push((childState, childAction, 1))
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
+    #Same setup as depth first search. Only difference is I used a Queue here.
+    # Written by Nikhil
+    x = util.Queue()
+    visitedNode = []
+    x.push((problem.getStartState(), [], 1))
+    while not x.isEmpty():
+        node = x.pop()
+        state = node[0]
+        operationDone = node[1]
+        if problem.isGoalState(state):
+            return operationDone
+        if state not in visitedNode:
+            visitedNode.append(state)
+            success = problem.getSuccessors(state)
+            for item in success:
+                childState = item[0]
+                childOperationDone = item[1]
+                if childState not in visitedNode:
+                    childAction = operationDone + [childOperationDone]
+                    x.push((childState, childAction, 1))
     util.raiseNotDefined()
 
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
+    #Written by Nikhil
+    #Initialized all variables and queues for cost function.
+    pacmanQueue = util.PriorityQueue()
+    state = set()
+    x = (problem.getStartState(), 0, [])
+    pacmanQueue.push(x, 0)
+    #While queue is not empty, we are moving the pacman based on the direction and cost.
+    while not pacmanQueue.isEmpty():
+        (node1, cost, direction) = pacmanQueue.pop()
+        if problem.isGoalState(node1):
+            return direction
+        if not node1 in state:
+            state.add(node1)
+            for nextNode, nextOperation, nextCost in problem.getSuccessors(node1):
+                directionTotal = direction + [nextOperation]
+                costTotal = cost + nextCost
+                stateTotal = (nextNode, costTotal, directionTotal)
+                pacmanQueue.push(stateTotal, costTotal)
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
