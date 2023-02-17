@@ -291,6 +291,7 @@ class CornersProblem(search.SearchProblem):
         self._expanded = 0 # DO NOT CHANGE; Number of search nodes expanded
         # Please add any code here which you would like to use
         # in initializing the problem
+        #Written by Andrew
         "*** YOUR CODE HERE ***"
         self.cornerList = []
         self.startState = (self.startingPosition, self.cornerList)
@@ -390,21 +391,22 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    node = state[0]
-    cornersVisited = state[1]
-    cornersYetToBeVisited = []
+    node = state[0] #current node
+    cornersVisited = state[1] #visited corners
+    cornersYetToBeVisited = [] #unvisited corners
+    heuristic = 0 #heuristic value
     for item in corners:
         if item not in cornersVisited:
             cornersYetToBeVisited.append(item)
-    if len(cornersYetToBeVisited) == 0:
-        return 0 # Default to trivial solution
 
-    NYC = []
-    for item in cornersYetToBeVisited:
-        NYC.append(util.manhattanDistance(item, node))
-        cornersYetToBeVisited.remove(item)
-    return min(NYC)
-
+    while cornersYetToBeVisited:
+        distance, corner = min([(util.manhattanDistance(node,corner), corner) for corner in cornersYetToBeVisited])
+        heuristic += distance
+        node = corner
+        cornersYetToBeVisited.remove(corner)
+    return heuristic
+    
+    
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
     def __init__(self):
