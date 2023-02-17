@@ -397,7 +397,7 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
         if item not in cornersVisited:
             cornersYetToBeVisited.append(item)
     if len(cornersYetToBeVisited) == 0:
-    return 0 # Default to trivial solution
+        return 0 # Default to trivial solution
 
     NYC = []
     for item in cornersYetToBeVisited:
