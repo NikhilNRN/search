@@ -292,6 +292,8 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
+        self.cornerList = []
+        self.startState = (self.startingPosition, self.cornerList)
 
     def getStartState(self):
         """
@@ -299,6 +301,7 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
+        return self.startState
         util.raiseNotDefined()
 
     def isGoalState(self, state: Any):
@@ -306,6 +309,15 @@ class CornersProblem(search.SearchProblem):
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
+        node = state[0]
+        cornersVisited = state[1]
+
+        if node in self.corners:
+            if node not in cornersVisited:
+                cornersVisited.append(node)
+                print(cornersVisited)
+            return len(cornersVisited) == 4
+        return False
         util.raiseNotDefined()
 
     def getSuccessors(self, state: Any):
@@ -329,6 +341,20 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
+            x,y = state[0]
+            cornersVisited = state[1]
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            hitsWall = self.walls[nextx][nexty]
+            if not hitsWall:
+                nextState = (nextx, nexty)
+                cornersVisitedSuccessor = list(cornersVisited)
+                if nextState in self.corners:
+                    cornerState = nextState
+                    if cornerState not in cornersVisitedSuccessor:
+                        cornersVisitedSuccessor.append(cornerState)
+                childNode = ((nextState, cornersVisitedSuccessor), action, 1)
+                successors.append(childNode)
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
@@ -364,7 +390,20 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
+    node = state[0]
+    cornersVisited = state[1]
+    cornersYetToBeVisited = []
+    for item in corners:
+        if item not in cornersVisited:
+            cornersYetToBeVisited.append(item)
+    if len(cornersYetToBeVisited) == 0:
     return 0 # Default to trivial solution
+
+    NYC = []
+    for item in cornersYetToBeVisited:
+        NYC.append(util.manhattanDistance(item, node))
+        cornersYetToBeVisited.remove(item)
+    return min(NYC)
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
