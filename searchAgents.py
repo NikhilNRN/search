@@ -567,6 +567,10 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x,y = state
 
         "*** YOUR CODE HERE ***"
+        walls = self.walls
+        height, width = walls.height, walls.width
+        foodTuple = tuple([(i, j) for j in range(0, height) for i in range(0, width) if self.food.data[i][j]])
+        return bool(state in foodTuple)
         util.raiseNotDefined()
 
 def mazeDistance(point1: Tuple[int, int], point2: Tuple[int, int], gameState: pacman.GameState) -> int:
